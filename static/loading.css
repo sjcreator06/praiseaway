@@ -1,0 +1,24 @@
+body {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    height: 100vh;
+}
+
+.loading-html {
+    border: 18px solid black; 
+    border-radius: 50%; 
+    border-top: 18px solid white;
+    width: 75px; 
+    height: 75px;
+    animation: rotate 2.3s linear infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

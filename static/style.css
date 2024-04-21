@@ -1,0 +1,357 @@
+body {
+    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  #container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    color: #333;
+  }
+  
+  #randomLine {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 80%;
+    margin-bottom: 0; /* Remove margin bottom */
+    transition: transform 0.3s ease; /* Add transition for hover effect */
+  }
+  
+  #randomLine p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 0;
+  }
+  
+  .button-container {
+    margin-top: 10px; /* Add margin top for the button container */
+  }
+  
+  .button-30 {
+    align-items: center;
+    appearance: none;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: "JetBrains Mono",monospace;
+    height: 48px;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow,transform;
+    font-size: 18px;
+  }
+  
+  .button-30:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  }
+  
+  .button-30:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+  }
+  
+  .button-30:active {
+    box-shadow: #D6D6E7 0 3px 7px inset;
+    transform: translateY(2px);
+  }
+  
+  #songListPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    z-index: 1;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-height: 400px;
+    overflow-y: auto;
+    width: 100%; /* Adjusted width */
+    max-width: 600px; /* Added max-width for responsiveness */
+  }
+  
+  #songListPopup h2 {
+    margin-top: 0;
+    margin-bottom: 15px; /* Added margin-bottom */
+  }
+  
+  #songListPopup ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #songListPopup ul li {
+    margin-bottom: 10px;
+    display: flex; /* Added flex display */
+    align-items: center; /* Align items vertically */
+  }
+  
+  #songListPopup ul li input[type="checkbox"] {
+    margin-right: 10px; /* Added margin to separate checkbox and text */
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+  }
+  
+  .close:hover {
+    color: #555;
+  }
+  
+  #searchInput {
+    width: calc(100% - 20px); /* Adjusted width */
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  #searchInput:focus {
+    outline: none;
+    border-color: #6c63ff;
+    box-shadow: 0 0 5px #6c63ff;
+  }
+  
+  #loadingLink {
+    text-decoration: none;
+    color: #000000; /* Black color */
+    border-bottom: 1px solid transparent; /* Initially transparent underline */
+    transition: border-bottom 0.3s ease;
+  }
+  
+  #loadingLink:hover {
+    border-bottom: 1px solid #000000; /* Black underline on hover */
+  }
+  
+  
+  #setlistPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    z-index: 1;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-height: 400px;
+    overflow-y: auto;
+    width: 80%;
+    max-width: 500px;
+  }
+  
+  #setlistPopup h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+  
+  #setlistPopup ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #setlistPopup ul li {
+    margin-bottom: 10px;
+  }
+  
+  /* Added styles for popup */
+  .popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    overflow: auto;
+  }
+  
+  .popup-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 80%;
+  }
+  
+  .popup-content .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .popup-content .close:hover,
+  .popup-content .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  
+  .delete-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: #888; /* Color for the trash can icon */
+  }
+  
+  .delete-button:hover {
+    color: #f00; /* Change color on hover if desired */
+  }
+  
+  .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px; /* Adjust spacing as needed */
+  }
+  
+  .button-30 {
+      align-items: center;
+      appearance: none;
+      background-color: #FCFCFD;
+      border-radius: 4px;
+      border-width: 0;
+      box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+      box-sizing: border-box;
+      color: #36395A;
+      cursor: pointer;
+      display: inline-flex;
+      font-family: "JetBrains Mono",monospace;
+      height: 48px;
+      justify-content: center;
+      line-height: 1;
+      list-style: none;
+      overflow: hidden;
+      padding-left: 16px;
+      padding-right: 16px;
+      position: relative;
+      text-align: left;
+      text-decoration: none;
+      transition: box-shadow .15s,transform .15s;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      white-space: nowrap;
+      will-change: box-shadow,transform;
+      font-size: 18px;
+      margin: 0 10px; /* Adjust spacing between buttons */
+  }
+  
+  .button-30:focus {
+      box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  }
+  
+  .button-30:hover {
+      box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+      transform: translateY(-2px);
+  }
+  
+  .button-30:active {
+      box-shadow: #D6D6E7 0 3px 7px inset;
+      transform: translateY(2px);
+  }
+
+ 
+  
+  #songinfo:hover {
+    color:blue;
+  }
+
+  #setlistContent ul li:hover {
+    color: blue;
+}
+  
+
+input[type="text"] {
+	text-align: left;
+	font-size: 16px;
+	line-height: 24px;
+	font-family: Clash Display Semibold;
+	color: var(--black);
+	padding: 8px;
+	border-radius: 2px;
+	outline: 2px solid var(--gray);
+	cursor: pointer;
+	background: var(--light-gray);
+	transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.5), box-shadow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.5);
+	width: fit-content;
+	margin: 8px 0 8px 0;
+	border: none;
+}
+
+input[type="text"]:hover {
+	transform: translateX(5px) translateY(-5px);
+	outline: 2px solid var(--black);
+	box-shadow: -5px 5px 0 0 var(--gray), -5px 5px 0 2px var(--black);
+}
+
+input[type="text"]:active {
+	box-shadow: -3px 3px 0 0 var(--gray), -3px 3px 0 2px var(--black) !important;
+	transform: translateX(2px) translateY(-2px) !important;
+	outline: 2px solid var(--black) !important;
+}
+
+.checkbox-container input[type="checkbox"]:focus-visible ~ checkmark {
+  box-shadow: -3px 3px 0 0 var(--gray), -3px 3px 0 1px var(--black);
+	transform: translateX(3px) translateY(-3px);
+}
+
+.checkbox-container:hover checkmark {
+  box-shadow: -3px 3px 0 0 var(--gray), -3px 3px 0 1px var(--black);
+	transform: translateX(3px) translateY(-3px);
+}
+
+

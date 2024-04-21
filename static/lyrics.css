@@ -1,0 +1,27 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+}
+
+.lyrics {
+    margin: 50px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+.lyrics p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+

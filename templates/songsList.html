@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        #home {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+    <title>Song List</title>
+</head>
+<body>
+    <div class="lyrics">
+        <center>
+        <h1 id="title">Search Results with {{Song}}</h1>
+        <button onclick="home()" id="home"><i class="fa-solid fa-house"></i></button>
+        <button id="shareButton"><i class="fas fa-share"></i></button>
+        <button id="yt" onclick="setlist()" id="setlist"><i class="fa-solid fa-book"></i></button>
+        <button id="yt" onclick="youtube()" id="youtubeButton"><i class="fa-brands fa-youtube"></i></button>
+        
+        
+        <form action="/lyrics" method="post">
+            <input type="text" id="searchInput" name="searchInput" placeholder= "Search for a song...   ">
+        </form>
+        
+
+        {% for artist in songList %}
+             <p>{{artist}}</p>
+        {% endfor %}
+
+        </center>
+        
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

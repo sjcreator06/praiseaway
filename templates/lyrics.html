@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="static/lyrics.css" class="css">
+    <style>
+        #shareButton {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #shareButton:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        #home {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #home:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        #yt {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #yt:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+    <title>Lyrics</title>
+</head>
+<body>
+    <div class="lyrics">
+        <center>
+        <h1 id="title">{{ Song }}</h1>
+        <button onclick="home()" id="home"><i class="fa-solid fa-house"></i></button>
+        <button id="shareButton"><i class="fas fa-share"></i></button>
+        <button id="yt" onclick="setlist()" id="setlist"><i class="fa-solid fa-book"></i></button>
+        <button id="yt" onclick="youtube()" id="youtubeButton"><i class="fa-brands fa-youtube"></i></button>
+        <pre>{{ content }}</pre>
+        </center>
+    </div>
+
+    <script>
+        document.getElementById("shareButton").addEventListener("click", function() {
+            var currentUrl = window.location.href;
+            fetch('http://tinyurl.com/api-create.php?url=' + encodeURIComponent(currentUrl))
+            .then(response => response.text())
+            .then(shorturl => {
+                var tempInput = document.createElement("input");
+                tempInput.value = shorturl;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempInput);
+                var shareMessage = document.createElement("div");
+                shareMessage.textContent = "Shortened URL copied to clipboard!";
+                shareMessage.style.backgroundColor = "#4CAF50";
+                shareMessage.style.color = "white";
+                shareMessage.style.padding = "10px";
+                shareMessage.style.position = "fixed";
+                shareMessage.style.bottom = "10px";
+                shareMessage.style.left = "50%";
+                shareMessage.style.transform = "translateX(-50%)";
+                shareMessage.style.borderRadius = "5px";
+                document.body.appendChild(shareMessage);
+                setTimeout(function() {
+                    document.body.removeChild(shareMessage);
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while shortening the URL.');
+            });
+        });
+
+        function youtube(){
+            window.open("https://www.youtube.com/results?search_query="+ document.getElementById("title").innerHTML)
+        }
+
+        function home(){
+            location.href="/"
+        }
+
+        function setlist(){
+            var url = localStorage.getItem("setlist");
+            location.href=url
+        }
+    </script>
+</body>
+</html>

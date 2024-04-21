@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christian Song Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="christian.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <div id="container">
+        <div id="randomLine">
+            <p id="lineText"><span id="loadingText"></span><a href="javascript: displayRandomLine()" target="_blank" id="loadingLink" style="display:none;">Loading..</a></p>
+        </div>
+        <div class="button-container">
+            <button onclick="fetchAndProcessCSV()" class="button-30" role="button">Choose Random</button>
+            <button onclick="showSongList()" class="button-30" role="button">Show List</button>
+
+
+        </div>
+        <div id="songListPopup">
+            <span class="close" onclick="closeSongListPopup()">&times;</span>
+            <h2>Song List</h2>
+
+            <form action="/lyrics" method="post">
+                <input type="text" id="searchInput" name="searchInput" placeholder= "Search for a song...   ">
+            </form>
+    
+            <ul id="songList"></ul>
+        </div>
+        <br>
+        <button onclick="displaySetlist()" class="button-30" role="button">Setlist</button> <!-- New button -->
+        <br>
+        <button onclick="location.href=localStorage.getItem('url')" class="button-30" role="button">Shared Setlist</button>
+        <br>
+    </div>
+    <div id="setlistPopup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closeSetlistPopup()">&times;</span>
+            <div id="setlistContent"></div>
+            <br>
+            <button onclick="clearSetlist()" class="button-30" role="button">Clear Setlist</button> <!-- Clear button -->
+            <button onclick="shareSetlist()" class="button-30" role="button">Share Setlist</button> <!-- New button -->
+        </div>
+    </div>
+    <div id="lyricsDisplay"></div> <!-- New div for displaying lyrics -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
+    
+</body>
+</html>
