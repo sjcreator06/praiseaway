@@ -2,4 +2,3 @@ Flask
 Gunicorn
 lyricsgenius
 pyshorteners
-csv
