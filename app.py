@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from pyshorteners import Shortener
 import lyricsgenius as lg
 import csv
 import base64
@@ -137,6 +138,27 @@ def lyrics():
 @app.route("/loading")
 def loading():
     return render_template("loading.html")
+
+"""# Define routes
+@app.route("/")
+def index():
+    return render_template("index.html")"""
+
+
+# Shortens Setlist URL
+@app.route('/URL_Data', methods=['POST'])
+def receive_datas():
+    global setlistURL
+    data = request.get_json()
+    setlistURL = data.get('setlistURL')
+    url_shortner = Shortener()
+    shortURL = format(url_shortner.tinyurl.short(setlistURL))
+    print(shortURL)
+    return jsonify({'shortenedURL': shortURL})
+    
+
+
+
 
 #if __name__ == "__main__":
     #app.run(debug=True, port=8002)
