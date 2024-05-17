@@ -13,7 +13,6 @@ async function fetchAndProcessCSV() {
     sendrandom();
 }
 
-
 function sendrandom() {
     var song = document.getElementById('randomSong.title').value;
     var artist = document.getElementById('randomSong.title').value;
@@ -289,7 +288,9 @@ function generateSetlistURL() {
     return null;
 }
 
+
 var loc = location.href
+
 // Function to display the setlist from the URL parameters
 function displaySetlistFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -340,41 +341,36 @@ function copyToClipboard(text) {
 
 
 
-  // Function to generate and share setlist URL
-  function shareSetlist() {
-    generateSetlistURL()
-    var currentUrl = localStorage.getItem("setlist");;
-    fetch('http://tinyurl.com/api-create.php?url=' + encodeURIComponent(currentUrl))
-    .then(response => response.text())
-    .then(shorturl => {
-        var tempInput = document.createElement("input");
-        tempInput.value = shorturl;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand("copy");
-        document.body.removeChild(tempInput);
-        var shareMessage = document.createElement("div");
-        shareMessage.textContent = "Shortened URL copied to clipboard!";
-        shareMessage.style.backgroundColor = "#4CAF50";
-        shareMessage.style.color = "white";
-        shareMessage.style.padding = "10px";
-        shareMessage.style.position = "fixed";
-        shareMessage.style.bottom = "10px";
-        shareMessage.style.left = "50%";
-        shareMessage.style.transform = "translateX(-50%)";
-        shareMessage.style.borderRadius = "5px";
-        document.body.appendChild(shareMessage);
-        setTimeout(function() {
-            document.body.removeChild(shareMessage);
-        }, 2000);
+function shareSetlist() {
+    generateSetlistURL();
+    var currentUrl = localStorage.getItem("setlist");
+
+    const URLSend = {
+        setlistURL: currentUrl
+    };
+
+    fetch('/URL_Data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(URLSend)
+    })
+    .then(response => response.json())
+    .then(data => {
+        var shortenedUrl = data.shortenedURL;
+        console.log('Shortened URL:', shortenedUrl);
+
+        // Copys link to Clipboard
+        copyToClipboard(shortenedUrl);
+        
     })
     .catch(error => {
         console.error('Error:', error);
         alert('An error occurred while shortening the URL.');
+
     });
 }
-
-
 
   function loadSongList() {
     generateSetlistURL()
@@ -434,11 +430,12 @@ function openLyricsSite(title, artist) {
 <iframe src='/loading'></iframe>";
 
     const dataToSend = {
-        songAndArtist: `${cleanTitle} - ${cleanArtist}`
+        songAndArtist: `${cleanTitle} - ${cleanArtist}`,
     };
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/receive_data", true);
+
     xhr.setRequestHeader("Content-Type", "application/json"); // Set Content-Type header to application/json
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {                                                               
@@ -452,7 +449,5 @@ function openLyricsSite(title, artist) {
     };
     xhr.send(JSON.stringify(dataToSend));
 }
-
-
 
 fetchAndProcessCSV();
