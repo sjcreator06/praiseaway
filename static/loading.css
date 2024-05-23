@@ -1,24 +1,55 @@
-body {
+body, html {
+    height: 100%;
+    margin: 0;
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: center;
-    height: 100vh;
+    background: white;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
 }
 
-.loading-html {
-    border: 18px solid black; 
-    border-radius: 50%; 
-    border-top: 18px solid white;
-    width: 75px; 
-    height: 75px;
-    animation: rotate 2.3s linear infinite;
-}
 
-@keyframes rotate {
+@keyframes gradientAnimation {
     0% {
-        transform: rotate(0deg);
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
     }
     100% {
-        transform: rotate(360deg);
+        background-position: 0% 50%;
     }
+}
+
+body {
+    background-size: 200% 200%;
+    animation: gradientAnimation 10s ease infinite;
+}
+
+
+l-waveform {
+    display: block;
+    margin: auto;
+    --waveform-stroke-linecap: round;
+    --waveform-stroke-dasharray: 150;
+    --waveform-stroke-dashoffset: 75;
+}
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+l-waveform {
+    animation: pulse 1.5s infinite;
+    --waveform-color: #ffffff;
 }
