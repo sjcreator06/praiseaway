@@ -11,6 +11,7 @@ async function fetchAndProcessCSV() {
     displayRandomLine();
     loadSongList();
     sendrandom();
+    
 }
 
 function sendrandom() {
@@ -45,6 +46,7 @@ function closeSongListPopup() {
 function loadSongList() {
     const songList = document.getElementById("songList");
     songList.innerHTML = '';
+
     originalSongList.forEach((song, index) => {
         const listItem = document.createElement("li");
         const checkbox = document.createElement("input");
@@ -291,25 +293,33 @@ function generateSetlistURL() {
 
 var loc = location.href
 
-// Function to display the setlist from the URL parameters
 function displaySetlistFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const setlistParam = urlParams.get('setlist');
     if (setlistParam) {
-        const decodedSetlist = JSON.parse(decodeURIComponent(setlistParam));
+        const SSetlist = JSON.parse(decodeURIComponent(setlistParam));
         const setlistPopup = document.getElementById('setlistPopup');
         const setlistContent = document.getElementById('setlistContent');
-        let setlistHTML = '<h2>Setlist</h2><ul>';
-        decodedSetlist.forEach((song, index) => {
+        let setlistHTML = '<h2>Shared Setlist</h2><ul>';
+        SSetlist.forEach((song, index) => {
             setlistHTML += `<li>${index + 1}. ${song.title} - ${song.artist}</li>`;
         });
         setlistHTML += '</ul>';
         setlistContent.innerHTML = setlistHTML;
         setlistPopup.style.display = 'block';
-        loc = location.href;
-        localStorage.setItem("url", loc)
+        const listItems = setlistContent.querySelectorAll('li');
+        listItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                const selectedSong = SSetlist[index];
+                openLyricsSite(selectedSong.title, selectedSong.artist);
+            });
+        });
+
+        const loc = location.href;
+        localStorage.setItem("url", loc);
     }
 }
+
 
 // Call the function to display setlist from URL when the page loads
 window.onload = displaySetlistFromURL;
@@ -376,8 +386,11 @@ function shareSetlist() {
     generateSetlistURL()
     const songList = document.getElementById("songList");
     songList.innerHTML = '';
+
+    console.log(originalSongList)
     originalSongList.forEach((song, index) => {
         const listItem = document.createElement("li");
+        console.log(originalSongList)
         listItem.id = 'songinfo';
         // Create checkbox element
         const checkbox = document.createElement("input");
@@ -393,6 +406,7 @@ function shareSetlist() {
                 const selectedSong = originalSongList[index];
                 removeFromSetlist(selectedSong);
             }
+        
         });
 
         // Create text span for song title and artist
@@ -448,6 +462,33 @@ function openLyricsSite(title, artist) {
         }
     };
     xhr.send(JSON.stringify(dataToSend));
+}
+
+
+
+
+function loadsearchedsongList() {
+  generateSetlistURL()
+  const searchedSongs = document.getElementById("searchedsongs");
+
+  searchedSongs.innerHTML = '';
+
+  searchedsongLists.forEach((song) => {
+      const listItem = document.createElement("myli");
+      listItem.id = 'searchedsongInfo';      // For CSS
+      
+      // Create text span for song title and artist
+      const textSpan = document.createElement("span");
+      textSpan.innerHTML = `${song.title} - ${song.artist}`;
+
+      // Add event listener to open lyrics site when text is clicked
+      textSpan.addEventListener('click', () => openLyricsSite(song.title, song.artist));
+
+      listItem.appendChild(textSpan);
+
+      // Append list item to song list
+      searchedSongs.appendChild(listItem);
+  });
 }
 
 fetchAndProcessCSV();
