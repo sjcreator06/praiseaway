@@ -1,5 +1,5 @@
 let originalSongList = [];
-generateSetlistURL();
+generateSetlistURL()
 
 async function fetchAndProcessCSV() {
     const response = await fetch('/static/songs.csv'); // Updated fetch URL
@@ -11,26 +11,28 @@ async function fetchAndProcessCSV() {
     displayRandomLine();
     loadSongList();
     sendrandom();
+    
 }
 
 function sendrandom() {
+    var song = document.getElementById('randomSong.title').value;
+    var artist = document.getElementById('randomSong.title').value;
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/receive_variable');
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({song: song, artist: artist}));
+    xhr.send(JSON.stringify({variable: song}));
+    xhr.send(JSON.stringify({variable: artist}));
 }
 
 function displayRandomLine() {
     const randomLineIndex = Math.floor(Math.random() * originalSongList.length);
     const randomSong = originalSongList[randomLineIndex];
+    const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(randomSong.title)}+${encodeURIComponent(randomSong.artist)}`;
     const loadingLink = document.getElementById('loadingLink');
     loadingLink.style.display = 'inline';
+    loadingLink.href = youtubeSearchUrl;
     loadingLink.textContent = `${randomSong.title} - ${randomSong.artist}`;
-    loadingLink.onclick = () => openLyricsSite(randomSong.title, randomSong.artist);
 }
-
-
-
 
 function showSongList() {
     document.getElementById("songListPopup").style.display = "block";
@@ -104,7 +106,7 @@ function filterSongList(searchInput) {
 
     const filteredSongs = originalSongList.filter(song =>
         song.title.toLowerCase().includes(searchInput) || // Check if title matches search input
-        song.artist.toLowerCase().includes(searchInput) // Check if artist matches search input
+        song.artist.toLowerCase().includes(searchInput)  // Check if artist matches search input
     );
 
     const songList = document.getElementById("songList");
@@ -123,8 +125,6 @@ function filterSongList(searchInput) {
                     addToSetlist(song);
                 }
             });
-
-
 
             listItem.appendChild(checkbox);
 
@@ -231,6 +231,7 @@ document.getElementById('songList').addEventListener('change', storeSelectedSong
 
 
 
+// Retrieve selected songs from local storage and display them in a popup
 function displaySetlist() {
     const selectedSongs = JSON.parse(localStorage.getItem('selectedSongs'));
     const setlistPopup = document.getElementById('setlistPopup');
@@ -240,7 +241,7 @@ function displaySetlist() {
         let setlistHTML = '<h2>Setlist</h2><ul>';
         selectedSongs.forEach((song, index) => {
             const songId = `song-${index}`;
-            setlistHTML += `<li id="${songId}">${index + 1}. ${song.title} - ${song.artist} <button onclick="deleteSong(event, ${index})" class="delete-button"><i class="fas fa-trash-alt"></i></button></li>`;
+            setlistHTML += `<li id="${songId}">${index + 1}. ${song.title} - ${song.artist} <button onclick="deleteSong(${index})" class="delete-button"><i class="fas fa-trash-alt"></i></button></li>`;
         });
         setlistHTML += '</ul>';
         setlistContent.innerHTML = setlistHTML;
@@ -257,19 +258,14 @@ function displaySetlist() {
     }
 }
 
+
 // Close setlist popup
 function closeSetlistPopup() {
     document.getElementById("setlistPopup").style.display = "none";
 }
 
-function closeSetlistPopup2() {
-    document.getElementById("setlistPopup2").style.display = "none";
-}
-
-
 // Delete a song from the setlist
 function deleteSong(index) {
-    event.stopPropagation();
     let selectedSongs = JSON.parse(localStorage.getItem('selectedSongs'));
     selectedSongs.splice(index, 1);
     localStorage.setItem('selectedSongs', JSON.stringify(selectedSongs));
@@ -297,13 +293,14 @@ function generateSetlistURL() {
 
 
 var loc = location.href
+
 function displaySetlistFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const setlistParam = urlParams.get('setlist');
     if (setlistParam) {
         const SSetlist = JSON.parse(decodeURIComponent(setlistParam));
-        const setlistPopup = document.getElementById('setlistPopup2');
-        const setlistContent = document.getElementById('setlistContent2');
+        const setlistPopup = document.getElementById('setlistPopup');
+        const setlistContent = document.getElementById('setlistContent');
         let setlistHTML = '<h2>Shared Setlist</h2><ul>';
         SSetlist.forEach((song, index) => {
             setlistHTML += `<li>${index + 1}. ${song.title} - ${song.artist}</li>`;
@@ -321,14 +318,12 @@ function displaySetlistFromURL() {
 
         const loc = location.href;
         localStorage.setItem("url", loc);
-        
-        
     }
 }
 
 
 // Call the function to display setlist from URL when the page loads
-window.onload = displaySetlistFromURL();
+window.onload = displaySetlistFromURL;
 
 // Delete a song from the setlist
 function deleteSong(index) {
@@ -358,38 +353,6 @@ function copyToClipboard(text) {
 
 
 function shareSetlist() {
-    generateSetlistURL();
-    var currentUrl = localStorage.getItem("setlist");
-
-    const URLSend = {
-        setlistURL: currentUrl
-    };
-
-    fetch('/URL_Data', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(URLSend)
-    })
-    .then(response => response.json())
-    .then(data => {
-        var shortenedUrl = data.shortenedURL;
-        console.log('Shortened URL:', shortenedUrl);
-
-        // Copys link to Clipboard
-        copyToClipboard(shortenedUrl);
-        
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while shortening the URL.');
-
-    });
-}
-
-
-function shareSetlist2() {
     generateSetlistURL();
     var currentUrl = localStorage.getItem("setlist");
 
@@ -528,9 +491,5 @@ function loadsearchedsongList() {
       searchedSongs.appendChild(listItem);
   });
 }
-
-
-
-
 
 fetchAndProcessCSV();
