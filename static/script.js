@@ -1,5 +1,5 @@
 let originalSongList = [];
-generateSetlistURL()
+generateSetlistURL();
 
 async function fetchAndProcessCSV() {
     const response = await fetch('/static/songs.csv'); // Updated fetch URL
@@ -11,28 +11,26 @@ async function fetchAndProcessCSV() {
     displayRandomLine();
     loadSongList();
     sendrandom();
-    
 }
 
 function sendrandom() {
-    var song = document.getElementById('randomSong.title').value;
-    var artist = document.getElementById('randomSong.title').value;
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/receive_variable');
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({variable: song}));
-    xhr.send(JSON.stringify({variable: artist}));
+    xhr.send(JSON.stringify({song: song, artist: artist}));
 }
 
 function displayRandomLine() {
     const randomLineIndex = Math.floor(Math.random() * originalSongList.length);
     const randomSong = originalSongList[randomLineIndex];
-    const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(randomSong.title)}+${encodeURIComponent(randomSong.artist)}`;
     const loadingLink = document.getElementById('loadingLink');
     loadingLink.style.display = 'inline';
-    loadingLink.href = youtubeSearchUrl;
     loadingLink.textContent = `${randomSong.title} - ${randomSong.artist}`;
+    loadingLink.onclick = () => openLyricsSite(randomSong.title, randomSong.artist);
 }
+
+
+
 
 function showSongList() {
     document.getElementById("songListPopup").style.display = "block";
@@ -116,6 +114,7 @@ function filterSongList(searchInput) {
         filteredSongs.forEach((song, index) => {
             const listItem = document.createElement("li");
             const checkbox = document.createElement("input");
+            listItem.id = 'filteredsonginfo';
             checkbox.type = "checkbox";
             checkbox.id = `checkbox-${index}`;
 
@@ -124,6 +123,8 @@ function filterSongList(searchInput) {
                     addToSetlist(song);
                 }
             });
+
+
 
             listItem.appendChild(checkbox);
 
@@ -230,7 +231,6 @@ document.getElementById('songList').addEventListener('change', storeSelectedSong
 
 
 
-// Retrieve selected songs from local storage and display them in a popup
 function displaySetlist() {
     const selectedSongs = JSON.parse(localStorage.getItem('selectedSongs'));
     const setlistPopup = document.getElementById('setlistPopup');
@@ -240,7 +240,7 @@ function displaySetlist() {
         let setlistHTML = '<h2>Setlist</h2><ul>';
         selectedSongs.forEach((song, index) => {
             const songId = `song-${index}`;
-            setlistHTML += `<li id="${songId}">${index + 1}. ${song.title} - ${song.artist} <button onclick="deleteSong(${index})" class="delete-button"><i class="fas fa-trash-alt"></i></button></li>`;
+            setlistHTML += `<li id="${songId}">${index + 1}. ${song.title} - ${song.artist} <button onclick="deleteSong(event, ${index})" class="delete-button"><i class="fas fa-trash-alt"></i></button></li>`;
         });
         setlistHTML += '</ul>';
         setlistContent.innerHTML = setlistHTML;
@@ -257,14 +257,19 @@ function displaySetlist() {
     }
 }
 
-
 // Close setlist popup
 function closeSetlistPopup() {
     document.getElementById("setlistPopup").style.display = "none";
 }
 
+function closeSetlistPopup2() {
+    document.getElementById("setlistPopup2").style.display = "none";
+}
+
+
 // Delete a song from the setlist
 function deleteSong(index) {
+    event.stopPropagation();
     let selectedSongs = JSON.parse(localStorage.getItem('selectedSongs'));
     selectedSongs.splice(index, 1);
     localStorage.setItem('selectedSongs', JSON.stringify(selectedSongs));
@@ -292,14 +297,13 @@ function generateSetlistURL() {
 
 
 var loc = location.href
-
 function displaySetlistFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const setlistParam = urlParams.get('setlist');
     if (setlistParam) {
         const SSetlist = JSON.parse(decodeURIComponent(setlistParam));
-        const setlistPopup = document.getElementById('setlistPopup');
-        const setlistContent = document.getElementById('setlistContent');
+        const setlistPopup = document.getElementById('setlistPopup2');
+        const setlistContent = document.getElementById('setlistContent2');
         let setlistHTML = '<h2>Shared Setlist</h2><ul>';
         SSetlist.forEach((song, index) => {
             setlistHTML += `<li>${index + 1}. ${song.title} - ${song.artist}</li>`;
@@ -317,12 +321,14 @@ function displaySetlistFromURL() {
 
         const loc = location.href;
         localStorage.setItem("url", loc);
+        
+        
     }
 }
 
 
 // Call the function to display setlist from URL when the page loads
-window.onload = displaySetlistFromURL;
+window.onload = displaySetlistFromURL();
 
 // Delete a song from the setlist
 function deleteSong(index) {
@@ -352,6 +358,38 @@ function copyToClipboard(text) {
 
 
 function shareSetlist() {
+    generateSetlistURL();
+    var currentUrl = localStorage.getItem("setlist");
+
+    const URLSend = {
+        setlistURL: currentUrl
+    };
+
+    fetch('/URL_Data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(URLSend)
+    })
+    .then(response => response.json())
+    .then(data => {
+        var shortenedUrl = data.shortenedURL;
+        console.log('Shortened URL:', shortenedUrl);
+
+        // Copys link to Clipboard
+        copyToClipboard(shortenedUrl);
+        
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while shortening the URL.');
+
+    });
+}
+
+
+function shareSetlist2() {
     generateSetlistURL();
     var currentUrl = localStorage.getItem("setlist");
 
@@ -428,22 +466,20 @@ function shareSetlist() {
 function openLyricsSite(title, artist) {
     const cleanTitle = title.replace(/[\(\)&!.-/á']/g, '').trim();
     const cleanArtist = artist.replace(/[\(\)&!.-/á']/g, '').trim();
-    document.body.innerHTML = `
-        <style>
-            iframe {
-                width: 100vw;
-                height: 100vh;
-                border: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                z-index: 9999;
-                background: url('https://your-image-url.jpg') no-repeat center center fixed;
-                background-size: cover;
-            }
-        </style>
-        <iframe src="/loading"></iframe>
-    `;
+    document.body.innerHTML = "<style> \
+    iframe { \
+        width: 100vw; \
+        height: 100vh; \
+        border: none; \
+        position: fixed; \
+        top: 0; \
+        left: 0; \
+        z-index: 9999; \
+        background: url('https://your-image-url.jpg') no-repeat center center fixed; \
+        background-size: cover; \
+    } \
+</style> \
+<iframe src='/loading'></iframe>";
 
     const dataToSend = {
         songAndArtist: `${cleanTitle} - ${cleanArtist}`,
@@ -451,30 +487,20 @@ function openLyricsSite(title, artist) {
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/receive_data", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
 
+    xhr.setRequestHeader("Content-Type", "application/json"); // Set Content-Type header to application/json
     xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.readyState === XMLHttpRequest.DONE) {                                                               
             if (xhr.status === 200) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    window.location.href = "/lyrics?lyrics=" + encodeURIComponent(response.lyrics);
-                } catch (e) {
-                    console.error("Error parsing response JSON:", e);
-                }
+                const response = JSON.parse(xhr.responseText);
+                window.location.href = "/lyrics?lyrics=" + encodeURIComponent(response.lyrics);
             } else {
-                console.error("Failed to send data to Flask! Status:", xhr.status, xhr.responseText);
+                console.error("Failed to send data to Flask! Status:", xhr.status);
             }
         }
     };
-
-    xhr.onerror = function() {
-        console.error("Request failed");
-    };
-
     xhr.send(JSON.stringify(dataToSend));
 }
-
 
 
 
@@ -502,5 +528,9 @@ function loadsearchedsongList() {
       searchedSongs.appendChild(listItem);
   });
 }
+
+
+
+
 
 fetchAndProcessCSV();
