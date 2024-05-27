@@ -472,7 +472,7 @@ function openLyricsSite(title, artist) {
             }
         }
     };
-    setTimeout(() => { xhr.send(JSON.stringify(dataToSend)); }, 5);
+    setTimeout(() => { xhr.send(JSON.stringify(dataToSend)); }, 2000);
     
 }
 
