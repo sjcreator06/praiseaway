@@ -451,6 +451,17 @@ function openLyricsSite(title, artist) {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/receive_data", true);
 
+    xhr.setRequestHeader("Content-Type", "application/json"); // Set Content-Type header to application/json
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {                                                               
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                window.location.href = "/lyrics?lyrics=" + encodeURIComponent(response.lyrics);
+            } else {
+                console.error("Failed to send data to Flask! Status:", xhr.status);
+            }
+        }
+    };
     
 }
 
