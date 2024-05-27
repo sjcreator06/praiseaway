@@ -444,6 +444,13 @@ function openLyricsSite(title, artist) {
 </style> \
 <iframe src='/loading'></iframe>";
 
+    const dataToSend = {
+        songAndArtist: `${cleanTitle} - ${cleanArtist}`,
+    };
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/receive_data", true);
+
     
 }
 
