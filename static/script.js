@@ -444,10 +444,6 @@ function loadingSite(){
 
 }
 
-function xhrProcessing() {
-
-}
-
 function openLyricsSite(title, artist) {
     const cleanTitle = title.replace(/[\(\)&!.-/á']/g, '').trim();
     const cleanArtist = artist.replace(/[\(\)&!.-/á']/g, '').trim();
