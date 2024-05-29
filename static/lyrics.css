@@ -24,4 +24,28 @@ h2 {
     margin-top: 20px;
 }
 
+#buttonContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
+.controlButton {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.controlButton:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
