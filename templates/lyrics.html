@@ -6,7 +6,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="static/lyrics.css" class="css">
     <style>
-        #shareButton {
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        
+        .lyrics {
+            margin: 50px auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        }
+        
+        .lyrics p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        #buttonContainer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .controlButton {
             background-color: rgba(255, 255, 255, 0.8);
             border: 3px solid rgba(0, 0, 0, 0.1);
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
@@ -14,31 +48,50 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        #shareButton:hover {
+
+        .controlButton:hover {
             background-color: rgba(255, 255, 255, 0.9);
         }
-        #home {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            padding: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
-        #home:hover {
-            background-color: rgba(255, 255, 255, 0.9);
-        }
-        #yt {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            padding: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        #yt:hover {
-            background-color: rgba(255, 255, 255, 0.9);
-        }
+
+        body {
+  font-family: Arial, sans-serif;
+}
+
+#popupContainer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+
     </style>
     <title>Lyrics</title>
 </head>
@@ -46,10 +99,14 @@
     <div class="lyrics">
         <center>
         <h1 id="title">{{ Song }}</h1>
-        <button onclick="home()" id="home"><i class="fa-solid fa-house"></i></button>
-        <button id="shareButton"><i class="fas fa-share"></i></button>
-        <button id="yt" onclick="setlist()" id="setlist"><i class="fa-solid fa-book"></i></button>
-        <button id="yt" onclick="youtube()" id="youtubeButton"><i class="fa-brands fa-youtube"></i></button>
+        <div id="buttonContainer">
+            <button onclick="home()" class="controlButton"><i class="fa-solid fa-house"></i></button>
+            <button id="shareButton" class="controlButton"><i class="fas fa-share"></i></button>
+            <button onclick="setlist()" class="controlButton"><i class="fa-solid fa-book"></i></button>
+            <button onclick="youtube()" class="controlButton"><i class="fa-brands fa-youtube"></i></button>
+            <button onclick="spotify()" class="controlButton"><i class="fa-brands fa-spotify"></i></button>
+            <button onclick="addlist()" class="controlButton"><i class="fa-solid fa-plus"></i></button>
+        </div>
         <pre>{{ content }}</pre>
         </center>
     </div>
@@ -91,14 +148,46 @@
             window.open("https://www.youtube.com/results?search_query="+ document.getElementById("title").innerHTML)
         }
 
+        function spotify(){
+            window.open("  https://open.spotify.com/search/"+ document.getElementById("title").innerHTML)
+        }
+
+
         function home(){
             location.href="/"
         }
 
         function setlist(){
-            var url = localStorage.getItem("setlist");
-            location.href=url
+            
+            location.href="/setchoice"
         }
+        
+        function addlist() {
+            var songName = document.getElementById('title').textContent;
+            dashset(songName);
+            alert('added to setlist!')
+        }
+
+
+
+// document.getElementById("popupContainer").style.display = "block";
+            // document.getElementById("popupIframe").src = "/setchoice";
+
+            // document.getElementById("closePopup").addEventListener("click", function() {
+            // document.getElementById("popupContainer").style.display = "none";
+            // document.getElementById("popupIframe").src = "";
+            // });
+
+    
     </script>
+
+<div id="popupContainer">
+    <div class="popup">
+      <span class="close" id="closePopup">&times;</span>
+      <iframe id="popupIframe" src="" frameborder="0"></iframe>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
 </body>
 </html>
