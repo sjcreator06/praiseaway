@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setlist Picker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+
+.button-30 {
+  align-items: center;
+  appearance: none;
+  background-color: #FCFCFD;
+  border-radius: 4px;
+  border-width: 0;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #36395A;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono",monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s,transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow,transform;
+  font-size: 18px;
+}
+
+.button-30:focus {
+  box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+}
+
+.button-30:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.button-30:active {
+  box-shadow: #D6D6E7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+#setlistPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    z-index: 1;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-height: 400px;
+    overflow-y: auto;
+    width: 80%;
+    max-width: 500px;
+  }
+  
+  #setlistPopup h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+  
+  #setlistPopup ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #setlistPopup ul li {
+    margin-bottom: 10px;
+  }
+
+
+    </style>
+
+ 
+
+    
+</head>
+<body>
+  <div id="setlistPopup" class="popup">
+      <div class="popup-content">
+          <span class="close" onclick="closeSetlistPopup()">&times;</span>
+          <div id="setlistContent"></div>
+          <br>
+          <button onclick="clearSetlist()" class="button-30" role="button">Clear Setlist</button>
+          <button onclick="shareSetlist()" class="button-30" role="button">Share Setlist</button>
+      </div>
+  </div>
+  
+  <center><button onclick="displaySetlist()" class="button-30" role="button">Setlist</button></center>
+  <br><br><br>
+  <button onclick="location.href=localStorage.getItem('url')" class="button-30" role="button">Shared Setlist</button>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+
+<script>
+function displaySetlist() {
+    const selectedSongs = JSON.parse(localStorage.getItem('selectedSongs'));
+    const setlistPopup = document.getElementById('setlistPopup');
+    const setlistContent = document.getElementById('setlistContent');
+
+    if (selectedSongs && selectedSongs.length > 0) {
+        let setlistHTML = '<h2>Setlist</h2><ul>';
+        selectedSongs.forEach((song, index) => {
+            const songId = `song-${index}`;
+            setlistHTML += `<li id="${songId}">${index + 1}. ${song.title} - ${song.artist}</li>
+            <button onclick="deleteSong(${index})" class="delete-button"><i class="fas fa-trash-alt"></i></button>`;
+        });
+        setlistHTML += '</ul>';
+        setlistContent.innerHTML = setlistHTML;
+        setlistPopup.style.display = 'block';
+        
+        selectedSongs.forEach((song, index) => {
+            const songId = `song-${index}`;
+            const songElement = document.getElementById(songId);
+            songElement.addEventListener('click', () => openLyricsSite(song.title, song.artist));
+        });
+    } else {
+        setlistContent.innerHTML = "No songs selected yet!";
+        setlistPopup.style.display = 'block';
+    }
+}
+
+
+function closeSetlistPopup() {
+    location.href='/'
+}
+
+
+</script>
+</html>
