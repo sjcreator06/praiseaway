@@ -181,5 +181,5 @@ def receive_datas():
 
 
 
-if __name__ == "__main__":
-    app.run(debug=True, port=8002)
+# if __name__ == "__main__":
+#     app.run(debug=True, port=8002)
