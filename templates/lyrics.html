@@ -101,7 +101,7 @@
         <h1 id="title">{{ Song }}</h1>
         <div id="buttonContainer">
             <button onclick="home()" class="controlButton"><i class="fa-solid fa-house"></i></button>
-            <button id="shareButton" class="controlButton"><i class="fas fa-share"></i></button>
+            <button onclick="shortenSongURL()" class="controlButton"><i class="fas fa-share"></i></button>
             <button onclick="setlist()" class="controlButton"><i class="fa-solid fa-book"></i></button>
             <button onclick="youtube()" class="controlButton"><i class="fa-brands fa-youtube"></i></button>
             <button onclick="spotify()" class="controlButton"><i class="fa-brands fa-spotify"></i></button>
@@ -112,37 +112,35 @@
     </div>
 
     <script>
-        document.getElementById("shareButton").addEventListener("click", function() {
-            var currentUrl = window.location.href;
-            fetch('http://tinyurl.com/api-create.php?url=' + encodeURIComponent(currentUrl))
-            .then(response => response.text())
-            .then(shorturl => {
-                var tempInput = document.createElement("input");
-                tempInput.value = shorturl;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand("copy");
-                document.body.removeChild(tempInput);
-                var shareMessage = document.createElement("div");
-                shareMessage.textContent = "Shortened URL copied to clipboard!";
-                shareMessage.style.backgroundColor = "#4CAF50";
-                shareMessage.style.color = "white";
-                shareMessage.style.padding = "10px";
-                shareMessage.style.position = "fixed";
-                shareMessage.style.bottom = "10px";
-                shareMessage.style.left = "50%";
-                shareMessage.style.transform = "translateX(-50%)";
-                shareMessage.style.borderRadius = "5px";
-                document.body.appendChild(shareMessage);
-                setTimeout(function() {
-                    document.body.removeChild(shareMessage);
-                }, 2000);
+        function shortenSongURL() {
+            var currentUrl = location.href;
+        
+            const URLSend = {
+                setlistURL: currentUrl
+            };
+        
+            fetch('/URL_Data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(URLSend)
+            })
+            .then(response => response.json())
+            .then(data => {
+                var shortenedUrl = data.shortenedURL;
+                console.log('Shortened URL:', shortenedUrl);
+        
+                // Copys link to Clipboard
+                copyToClipboard(shortenedUrl);
+                
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('An error occurred while shortening the URL.');
+        
             });
-        });
+        }
 
         function youtube(){
             window.open("https://www.youtube.com/results?search_query="+ document.getElementById("title").innerHTML)
