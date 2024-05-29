@@ -17,28 +17,119 @@
     </style>
     <title>Song List</title>
 </head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    #searchedsonginfo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 20px;
+      color: #333;
+      opacity: 0;
+      animation: fade-in 2s forwards;
+      color:black;
+    }
+
+    #searchedsonginfo:hover{
+        color:turquoise;
+    }
+
+    @keyframes fade-in {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
 <body>
     <div class="lyrics">
         <center>
-        <h1 id="title">Search Results with {{Song}}</h1>
-        <button onclick="home()" id="home"><i class="fa-solid fa-house"></i></button>
-        <button id="shareButton"><i class="fas fa-share"></i></button>
-        <button id="yt" onclick="setlist()" id="setlist"><i class="fa-solid fa-book"></i></button>
-        <button id="yt" onclick="youtube()" id="youtubeButton"><i class="fa-brands fa-youtube"></i></button>
-        
-        
-        <form action="/lyrics" method="post">
-            <input type="text" id="searchInput" name="searchInput" placeholder= "Search for a song...   ">
+        <h1 id="title">Search Results for {{Song}}...</h1>
+        <button onclick="home()" id="home">
+            
+        <i class="fa-solid fa-house"></i></button><form action="/lyrics" method="post">
+            <input type="text" id="searchInput" name="searchInput" placeholder= "Search for another song...   ">
         </form>
-        
+
+        <div id="searchedSongs">
 
         {% for artist in songList %}
-             <p>{{artist}}</p>
+            <p id="songfr">{{artist}}</p> 
         {% endfor %}
+
+        <div>
 
         </center>
         
-    </div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        let dataList = [];
+        let searchedSongsList = [];
+
+        function fetchAndProcessSearchedSongs() {
+            var searchedSongArtist = document.getElementsByTagName("p");
+            
+            for (let i = 0; i < searchedSongArtist.length; i++) {
+                
+                let data = searchedSongArtist[i].innerHTML;
+                dataList.push(data);
+            }
+            
+            searchedSongsList = dataList.map(line => {
+                const [title, artist] = line.split(' - ');
+                return { title, artist };
+            });
+
+            console.log(dataList);
+            console.log(searchedSongsList);
+            
+        }
+        
+        fetchAndProcessSearchedSongs();
+
+        
+
+        function displaySearchedSongs(searchInput) {
+
+            const songList = document.getElementById("searchedSongs");
+            songList.innerHTML = '';
+        
+            if (searchedSongsList.length > 0) {
+                searchedSongsList.forEach((song, index) => {
+                    const listItem = document.createElement("p");
+                    const checkbox = document.createElement("input");
+                    listItem.id = 'searchedsonginfo';
+                    checkbox.type = "checkbox";
+                    checkbox.id = `checkbox-${index}`;
+        
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            addToSetlist(song);
+                        }
+                    });
+        
+                    listItem.appendChild(checkbox);
+        
+                    const textSpan = document.createElement("span");
+                    textSpan.innerHTML = `${index + 1}. ${song.title} - ${song.artist}`;
+        
+                    textSpan.addEventListener('click', () => openLyricsSite(song.title, song.artist));
+        
+                    listItem.appendChild(textSpan);
+                    songList.appendChild(listItem);
+                });
+            } else {
+                const listItem = document.createElement("li");
+                listItem.text0Content = "Click enter to search further...";
+                songList.appendChild(listItem);
+            }
+        }
+
+        function home(){
+            location.href="/"
+        }
+
+        displaySearchedSongs()
+        
+    </script>
+    
 </body>
 </html>
