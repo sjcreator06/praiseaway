@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, json
 from pyshorteners import Shortener
 import lyricsgenius as lg
 import csv
@@ -12,6 +12,11 @@ app = Flask(__name__, template_folder='templates')
 def index():
     return render_template("index.html")
 
+
+@app.route("/setchoice")
+def setchoice():
+    return render_template("setchoice.html")
+
 # Recieves the Data when we click on song text with "-"
 @app.route('/receive_data', methods=['POST'])
 def receive_data():
@@ -23,7 +28,10 @@ def receive_data():
 
     song_and_artist = data.get('songAndArtist')
     
-    
+    if "amp;" in song_and_artist:
+        song_and_artist = song_and_artist.replace("amp;","&")
+
+
     if song_and_artist:
         song_name, artist_name = map(str.strip, song_and_artist.split('-', 1))
 
@@ -33,14 +41,12 @@ def receive_data():
             if artist:
                 song = artist.song(song_name)
                 if song:
-                    encoded_lyrics = base64.b64encode(song.lyrics.encode()).decode()
-                    return jsonify({'lyrics': encoded_lyrics})
+                    return jsonify({'lyrics': song.lyrics})
 
         else:
             song = genius.search_song(song_name)
             if song:
-                encoded_lyrics = base64.b64encode(song.lyrics.encode()).decode()
-                return jsonify({'lyrics': encoded_lyrics})
+                return jsonify({'lyrics': song.lyrics})
 
     return jsonify({'error': 'Failed to retrieve lyrics'})
 
@@ -79,7 +85,6 @@ def process_form():
         artistNames = []
         songTitles = []
         
-        
         songDict = genius.search_songs(songName)
         songResults = songDict["hits"]
         
@@ -96,17 +101,35 @@ def process_form():
         secularArtistNames = []
         christianArtistNames = []
         artistSongforHTML = []
+        christianTemporaryArtistNames = []   # Used for Christian Song Index
+        christianSongIndex = []
+        christianSongTitles = []
 
+        for name in artistNames:
+            christianTemporaryArtistNames.append(name)
+            if name in flattenedArtistsDatabase:
+                index = christianTemporaryArtistNames.index(name)
+                christianSongIndex.append(index)
+                christianTemporaryArtistNames[index] = ""
+                
+    
         for artist in artistNames:
             if artist in flattenedArtistsDatabase:
                 christianArtistNames.append(artist)
+        
             elif artist not in flattenedArtistsDatabase:
                 secularArtistNames.append(artist)
-       
-                
+        
+        
+        for index in christianSongIndex:
+            christianSongTitles.append(songTitles[index])
+        
+        i = 0   
         for name in christianArtistNames:
-            artistSongforHTML.append(songInput + " - " + name)
-            print(songInput + " - " + name)
+            artistSongforHTML.append(christianSongTitles[i] + " - " + name)
+            print(songTitles[i] + " - " + name)
+            i += 1
+            
 
         # Output Test Code
         print("Secular: " + str(secularArtistNames))
@@ -118,12 +141,9 @@ def process_form():
             artist = genius.search_artist(ArtistName, max_songs=1, sort="title")
             song = artist.song(songName)
             
-            encoded_lyrics = base64.b64encode(song.lyrics.encode()).decode()
-            decoded_lyrics = base64.b64decode(encoded_lyrics.encode()).decode()
-            
-            return render_template("lyrics.html", content=decoded_lyrics, Song=songName+ " - " + ArtistName)
+            return render_template("lyrics.html", content=song.lyrics, Song=songName+ " - " + ArtistName)
         
-        elif "-" not in songInput and christianArtistNames != []:
+        elif "-" not in songInput and christianArtistNames != []: 
             return render_template("songsList.html", songList = artistSongforHTML, Song=songName)
         else:
             return render_template("404.html")
@@ -132,17 +152,18 @@ def process_form():
 @app.route("/lyrics")
 def lyrics():
     lyrics_data = request.args.get('lyrics')
-    decoded_lyrics = base64.b64decode(lyrics_data).decode() if lyrics_data else "Lyrics not available"
-    return render_template("lyrics.html", content=decoded_lyrics, Song=song_and_artist)
+    if lyrics_data:
+        return render_template("lyrics.html", content=lyrics_data, Song=song_and_artist)
+    else:
+        print("Lyrics not available")
+        return render_template("404.html")
+        
+    
+        
 
 @app.route("/loading")
 def loading():
     return render_template("loading.html")
-
-"""# Define routes
-@app.route("/")
-def index():
-    return render_template("index.html")"""
 
 
 # Shortens Setlist URL
@@ -160,5 +181,5 @@ def receive_datas():
 
 
 
-#if __name__ == "__main__":
-    #app.run(debug=True, port=8002)
+if __name__ == "__main__":
+    app.run(debug=True, port=8002)
