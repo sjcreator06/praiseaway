@@ -15,7 +15,7 @@ def index():
 
 @app.route("/setchoice")
 def setchoice():
-    return render_template("index.html")
+    return render_template("setchoice.html")
 
 # Recieves the Data when we click on song text with "-"
 @app.route('/receive_data', methods=['POST'])
