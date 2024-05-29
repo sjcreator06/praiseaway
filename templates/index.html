@@ -138,7 +138,7 @@
                 optionElement.addEventListener('click', () => {
                     searchInput.value = option.replace(","," - ").replace(",,","");;
                     autocompleteResults.innerHTML = '';
-                    searchForm.submit(); // Submit the form
+                    setTimeout(() => { searchForm.submit(); }, 2000);  // Submit the form
                     loadingSite()
                 });
 
