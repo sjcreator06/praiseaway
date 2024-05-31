@@ -310,17 +310,27 @@ function generateSetlistURL() {
 
 
 var loc = location.href
+let songsShared = [];
+let artistsShared = [];
+
 function displaySetlistFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const setlistParam = urlParams.get('setlist');
     if (setlistParam) {
+
+        
+
+
         const SSetlist = JSON.parse(decodeURIComponent(setlistParam));
         const setlistPopup = document.getElementById('setlistPopup2');
         const setlistContent = document.getElementById('setlistContent2');
         let setlistHTML = '<h2>Shared Setlist</h2><ul>';
         SSetlist.forEach((song, index) => {
             setlistHTML += `<li>${index + 1}. ${song.title} - ${song.artist}</li>`;
+            songsShared.push(song.title)
+            artistsShared.push(song.artist)
         });
+
         setlistHTML += '</ul>';
         setlistContent.innerHTML = setlistHTML;
         setlistPopup.style.display = 'block';
@@ -338,7 +348,6 @@ function displaySetlistFromURL() {
         
     }
 }
-
 
 // Call the function to display setlist from URL when the page loads
 window.onload = displaySetlistFromURL();
