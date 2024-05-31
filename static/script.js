@@ -310,6 +310,7 @@ function generateSetlistURL() {
 
 
 var loc = location.href
+
 let songsShared = [];
 let artistsShared = [];
 
@@ -348,6 +349,7 @@ function displaySetlistFromURL() {
         
     }
 }
+
 
 // Call the function to display setlist from URL when the page loads
 window.onload = displaySetlistFromURL();
@@ -553,6 +555,58 @@ function loadsearchedsongList() {
       // Append list item to song list
       searchedSongs.appendChild(listItem);
   });
+}
+
+function backward() {
+    let storedData = localStorage.getItem('selectedSongs');
+    if (storedData) {
+    let songsArray = JSON.parse(storedData);
+
+    let songTitles = [];
+    let artists = [];
+
+    for (let i = 0; i < songsArray.length; i++) {
+        songTitles.push(songsArray[i].title);
+        artists.push(songsArray[i].artist);
+    }
+
+    let currentsong = document.getElementById("title").textContent.split(" - ")
+
+    console.log()
+
+    openLyricsSite(songTitles[songTitles.indexOf(currentsong[0])-1] ,artists[songTitles.indexOf(currentsong[0])-1])
+
+
+    } else {
+    console.log('No data found in local storage');
+    }
+}
+
+
+
+function forward() {
+    let storedData = localStorage.getItem('selectedSongs');
+    if (storedData) {
+    let songsArray = JSON.parse(storedData);
+
+    let songTitles = [];
+    let artists = [];
+
+    for (let i = 0; i < songsArray.length; i++) {
+        songTitles.push(songsArray[i].title);
+        artists.push(songsArray[i].artist);
+    }
+
+    let currentsong = document.getElementById("title").textContent.split(" - ")
+
+    
+
+    openLyricsSite(songTitles[songTitles.indexOf(currentsong[0])+1] ,artists[songTitles.indexOf(currentsong[0])+1])
+
+
+    } else {
+    console.log('No data found in local storage');
+    }
 }
 
 fetchAndProcessCSV();
