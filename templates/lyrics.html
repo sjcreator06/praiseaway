@@ -175,20 +175,18 @@
             let storedData = localStorage.getItem('selectedSongs');
             if (storedData) {
             let songsArray = JSON.parse(storedData);
+            let sharedsongslist = localStorage.getItem("songsShared")
+            let sharedartistslist = localStorage.getItem("artistsShared")
 
-            let songTitles = [];
-            let artists = [];
 
-            for (let i = 0; i < songsArray.length; i++) {
-                songTitles.push(songsArray[i].title);
-                artists.push(songsArray[i].artist);
-            }
+
 
             let currentsong = document.getElementById("title").textContent.split(" - ")
+            let sharedsong = JSON.parse(localStorage.getItem("songsShared"))
+            let sharedartist = JSON.parse(localStorage.getItem("artistsShared"))
 
-            console.log()
 
-            openLyricsSite(songTitles[songTitles.indexOf(currentsong[0])-1] ,artists[songTitles.indexOf(currentsong[0])-1])
+            openLyricsSite(sharedsong[sharedsong.indexOf(currentsong[0])-1] ,sharedartist[sharedartist.indexOf(currentsong[1])-1])
 
 
             } else {
@@ -202,20 +200,18 @@
             let storedData = localStorage.getItem('selectedSongs');
             if (storedData) {
             let songsArray = JSON.parse(storedData);
+            let sharedsongslist = localStorage.getItem("songsShared")
+            let sharedartistslist = localStorage.getItem("artistsShared")
 
-            let songTitles = [];
-            let artists = [];
 
-            for (let i = 0; i < songsArray.length; i++) {
-                songTitles.push(songsArray[i].title);
-                artists.push(songsArray[i].artist);
-            }
+
 
             let currentsong = document.getElementById("title").textContent.split(" - ")
+            let sharedsong = JSON.parse(localStorage.getItem("songsShared"))
+            let sharedartist = JSON.parse(localStorage.getItem("artistsShared"))
 
-            console.log()
 
-            openLyricsSite(songTitles[songTitles.indexOf(currentsong[0])+1] ,artists[songTitles.indexOf(currentsong[0])+1])
+            openLyricsSite(sharedsong[sharedsong.indexOf(currentsong[0])+1] ,sharedartist[sharedartist.indexOf(currentsong[1])+1])
 
 
             } else {
@@ -243,7 +239,6 @@
       <iframe id="popupIframe" src="" frameborder="0"></iframe>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 </html>
