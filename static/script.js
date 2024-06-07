@@ -368,20 +368,7 @@ function clearSetlist() {
     displaySetlist();
 }
 
-
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-        .then(() => {
-            alert('Shared URL has been copied to clipboard!');
-        })
-        .catch((err) => {
-            console.error('Could not copy text: ', err);
-        });
-}
-
-
-
-function shareSetlist() {
+$(function() {
     generateSetlistURL();
     var currentUrl = localStorage.getItem("setlist");
 
@@ -401,17 +388,30 @@ function shareSetlist() {
         var shortenedUrl = data.shortenedURL;
         console.log('Shortened URL:', shortenedUrl);
 
-        // Copys link to Clipboard
-        copyToClipboard(shortenedUrl);
-        
-    })
+        var clipboard = new Clipboard('#copyButton', {
+            text: function() {
+                return shortenedUrl; 
+            }
+        });
+    
+        clipboard.on('success', function(e) {
+            alert('Text copied to clipboard successfully!');
+            e.clearSelection(); // Clear the selection if needed
+        });
+    
+        clipboard.on('error', function(e) {
+            console.error('Could not copy text: ', e);
+        });
+
+    })  
+
     .catch(error => {
         console.error('Error:', error);
         alert('An error occurred while shortening the URL.');
 
     });
-}
 
+});
 
 function shareSetlist2() {
     generateSetlistURL();
