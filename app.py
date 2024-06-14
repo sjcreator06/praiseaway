@@ -228,4 +228,4 @@ def receive_datas():
     return jsonify({'shortenedURL': shortURL})
 
 if __name__ == "__main__":
-    app.run(debug=True, praiseaway.vercel.app)  # host='192.168.0.28'
+    app.run(debug=True)
