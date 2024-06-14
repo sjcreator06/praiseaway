@@ -2,4 +2,4 @@ Flask
 Gunicorn
 lyricsgenius
 pyshorteners
-github
+PyGithub
