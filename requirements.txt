@@ -4,4 +4,3 @@ lyricsgenius
 pyshorteners
 PyGithub
 dotenv
-os
