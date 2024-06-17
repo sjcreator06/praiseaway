@@ -87,7 +87,11 @@ def receive_data():
                 song = artist.song(song_name)
                 print(song_name)
                 if song_name not in gitSongs:
-                    return jsonify({'lyrics': song.lyrics})
+                    contents = repo.get_contents("Artists/" + artist_name+ "/" + song_name)
+                    print("Artists/" + artist_name+ "/" + song_name)
+                    lyrics = contents.decoded_content.decode()
+                    g.close()
+                    return jsonify({'lyrics': lyrics})
                 
                 else:
                     contents = repo.get_contents("Artists/" + artist_name+ "/" + song_name)
