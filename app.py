@@ -165,7 +165,10 @@ def process_form():
                 secularArtistNames.append(artist)
         
         for index in christianSongIndex:
-            christianSongTitles.append(songTitles[index])
+            if index > len(songTitles):
+                pass
+            else: 
+                christianSongTitles.append(songTitles[index])
               
         i = 0   
         for name in christianArtistNames:    
