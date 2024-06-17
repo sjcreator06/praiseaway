@@ -1,5 +1,7 @@
 Flask
-pyshorteners
+Gunicorn
 lyricsgenius
+pyshorteners
 PyGithub
-gunicorn
+dotenv
+os
