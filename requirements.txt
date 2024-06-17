@@ -3,4 +3,4 @@ Gunicorn
 lyricsgenius
 pyshorteners
 PyGithub
-dotenv
+python-dotenv
