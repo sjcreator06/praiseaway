@@ -8,7 +8,7 @@ from github import Github, Auth
 app = Flask(__name__, template_folder='templates')
 
 access_token = "LC2defTjjGgEM09GFXIhStvjR9d_YnZ3WArkc_yoW3aA1ewUgCbJGVk8k2BYuveo"
-gh_access_token = "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"
+gh_access_token = "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"
 auth = Auth.Token(gh_access_token)
 g = Github(auth=auth)
 repo = g.get_repo("sjcreator06/Praiseaway-Database")
