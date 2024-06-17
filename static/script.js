@@ -476,6 +476,8 @@ function openLyricsSite(title, artist) {
     const cleanTitle = title.trim();
     const cleanArtist = artist.trim();
     
+    alert(cleanArtist)
+    
     loadingSite()
 
     const dataToSend = {
@@ -484,8 +486,6 @@ function openLyricsSite(title, artist) {
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/receive_data", true);
-
-    alert("hi")
     xhr.setRequestHeader("Content-Type", "application/json"); // Set Content-Type header to application/json
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {                                                               
