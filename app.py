@@ -226,6 +226,3 @@ def receive_datas():
     shortURL = format(url_shortner.tinyurl.short(setlistURL))
     print(shortURL)
     return jsonify({'shortenedURL': shortURL})
-
-#if __name__ == "__main__":
-    #app.run(debug=True, host='192.168.0.28')  # host='192.168.0.28'
