@@ -133,8 +133,6 @@ function filterSongList(searchInput) {
                 }
             });
 
-
-
             listItem.appendChild(checkbox);
 
             const textSpan = document.createElement("span");
@@ -413,37 +411,6 @@ $(function() {
 
 });
 
-function shareSetlist2() {
-    generateSetlistURL();
-    var currentUrl = localStorage.getItem("setlist");
-
-    const URLSend = {
-        setlistURL: currentUrl
-    };
-
-    fetch('/URL_Data', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(URLSend)
-    })
-    .then(response => response.json())
-    .then(data => {
-        var shortenedUrl = data.shortenedURL;
-        console.log('Shortened URL:', shortenedUrl);
-
-        // Copys link to Clipboard
-        copyToClipboard(shortenedUrl);
-        
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while shortening the URL.');
-
-    });
-}
-
   function loadSongList() {
     generateSetlistURL()
     const songList = document.getElementById("songList");
@@ -506,8 +473,8 @@ function loadingSite(){
 }
 
 function openLyricsSite(title, artist) {
-    const cleanTitle = title.replace(/[\(\)&!.-/á']/g, '').trim();
-    const cleanArtist = artist.replace(/[\(\)&!.-/á']/g, '').trim();
+    const cleanTitle = title.trim();
+    const cleanArtist = artist.trim();
     
     loadingSite()
 
@@ -524,6 +491,7 @@ function openLyricsSite(title, artist) {
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
                 window.location.href = "/lyrics?lyrics=" + encodeURIComponent(response.lyrics);
+                alert(response.songname)
             } else {
                 console.error("Failed to send data to Flask! Status:", xhr.status);
             }
