@@ -227,5 +227,5 @@ def receive_datas():
     print(shortURL)
     return jsonify({'shortenedURL': shortURL})
 
-if __name__ == "__main__":
-    app.run(debug=True, host='192.168.0.28')  # host='192.168.0.28'
+#if __name__ == "__main__":
+    #app.run(debug=True, host='192.168.0.28')  # host='192.168.0.28'
