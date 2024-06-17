@@ -488,7 +488,7 @@ function openLyricsSite(title, artist) {
     xhr.setRequestHeader("Content-Type", "application/json"); // Set Content-Type header to application/json
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {                                                               
-            if (xhr.status === 200) {
+            if (xhr.status != 200) {
                 const response = JSON.parse(xhr.responseText);
                 window.location.href = "/lyrics?lyrics=" + encodeURIComponent(response.lyrics);
                 alert(response.songname)
