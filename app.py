@@ -4,15 +4,16 @@ import lyricsgenius as lg
 import csv
 import base64
 from github import Github, Auth
+import os
+from dotenv import load_dotenv 
 
-app = Flask(__name__, template_folder='templates')x
+app = Flask(__name__, template_folder='templates')
 
-access_token = "LC2defTjjGgEM09GFXIhStvjR9d_YnZ3WArkc_yoW3aA1ewUgCbJGVk8k2BYuveo"
-gh_access_token = "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"
+access_token = os.getenv("access_token")
+gh_access_token = os.getenv("gh_access_token")
 auth = Auth.Token(gh_access_token)
 g = Github(auth=auth)
 repo = g.get_repo("sjcreator06/Praiseaway-Database")
-
 
 # Fetching Github Repo Data
 contents = repo.get_contents("")
