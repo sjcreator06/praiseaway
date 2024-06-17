@@ -476,9 +476,6 @@ function openLyricsSite(title, artist) {
     const cleanTitle = title.trim();
     const cleanArtist = artist.trim();
     
-    alert(cleanArtist)
-    
-    loadingSite()
 
     const dataToSend = {
         songAndArtist: `${cleanTitle} - ${cleanArtist}`,
