@@ -85,20 +85,17 @@ def receive_data():
             artist = genius.search_artist(artist_name, max_songs=1, sort="title")
             if artist:
                 song = artist.song(song_name)
-                print(song_name)
                 if song_name not in gitSongs:
-                    contents = repo.get_contents("Artists/" + artist_name+ "/" + song_name)
-                    print("Artists/" + artist_name+ "/" + song_name)
-                    lyrics = contents.decoded_content.decode()
-                    g.close()
-                    return jsonify({'lyrics': lyrics})
+                    return jsonify({'lyrics': song.lyrics,
+                                    'songname': song_name})
                 
                 else:
                     contents = repo.get_contents("Artists/" + artist_name+ "/" + song_name)
                     print("Artists/" + artist_name+ "/" + song_name)
                     lyrics = contents.decoded_content.decode()
                     g.close()
-                    return jsonify({'lyrics': lyrics})
+                    return jsonify({'lyrics': lyrics,
+                                    'songname': song_name})
 
         else:
             song = genius.search_song(song_name)
@@ -173,7 +170,8 @@ def process_form():
                 pass
             else: 
                 christianSongTitles.append(songTitles[index])
-              
+        
+          
         i = 0   
         for name in christianArtistNames:    
             artistSongforHTML.append(christianSongTitles[i] + " - " + name)
