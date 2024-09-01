@@ -3,9 +3,55 @@ from pyshorteners import Shortener
 import lyricsgenius as lg
 import csv
 import base64
+from github import Github, Auth
+import os
+from dotenv import load_dotenv 
 
-access_token = "LC2defTjjGgEM09GFXIhStvjR9d_YnZ3WArkc_yoW3aA1ewUgCbJGVk8k2BYuveo"
+
 app = Flask(__name__, template_folder='templates')
+
+access_token = os.getenv("access_token")
+gh_access_token = os.getenv("gh_access_token")
+auth = Auth.Token(gh_access_token)
+g = Github(auth=auth)
+repo = g.get_repo("sjcreator06/Praiseaway-Database")
+
+# Fetching Github Repo Data
+contents = repo.get_contents("")
+
+gitContentPaths = []
+gitArtists = []
+gitSongs = []
+
+while contents:
+    file_content = contents.pop(0)
+    if file_content.type == "dir":
+        contents.extend(repo.get_contents(file_content.path))
+    else:
+        gitContentPaths.append(str(file_content))
+
+i=0
+for content in range(len(gitContentPaths)):
+    trimmedContent = gitContentPaths[i].replace('ContentFile(path="Artists/',"")
+    SlashIndex = trimmedContent.find("/")
+    endIndex = trimmedContent.find('"',SlashIndex+1)
+    gitartist = trimmedContent[:SlashIndex]
+    gitsong = trimmedContent[SlashIndex+1:endIndex]
+    gitArtists.append(gitartist)
+    gitSongs.append(gitsong)
+    i += 1
+
+gitArtists = list(set(gitArtists))   
+gitSongs = list(set(gitSongs))  
+
+
+# Key Lists Initialization
+secularArtistNames = []
+christianArtistNames = []
+artistSongforHTML = []
+christianTemporaryArtistNames = []   
+christianSongIndex = []
+christianSongTitles = []
 
 # Define routes
 @app.route("/")
@@ -23,11 +69,11 @@ def receive_data():
     global song_and_artist
     data = request.get_json()
     
-    
     print("Received data from JavaScript:", data)
 
     song_and_artist = data.get('songAndArtist')
-    
+    print(song_and_artist)
+     
     if "amp;" in song_and_artist:
         song_and_artist = song_and_artist.replace("amp;","&")
 
@@ -35,13 +81,22 @@ def receive_data():
     if song_and_artist:
         song_name, artist_name = map(str.strip, song_and_artist.split('-', 1))
 
-        genius = lg.Genius("LC2defTjjGgEM09GFXIhStvjR9d_YnZ3WArkc_yoW3aA1ewUgCbJGVk8k2BYuveo")
+        genius = lg.Genius(access_token)
         if artist_name:
             artist = genius.search_artist(artist_name, max_songs=1, sort="title")
             if artist:
                 song = artist.song(song_name)
-                if song:
-                    return jsonify({'lyrics': song.lyrics})
+                if song_name not in gitSongs:
+                    return jsonify({'lyrics': song.lyrics,
+                                    'songname': song_name})
+                
+                else:
+                    contents = repo.get_contents("Artists/" + artist_name+ "/" + song_name)
+                    print("Artists/" + artist_name+ "/" + song_name)
+                    lyrics = contents.decoded_content.decode()
+                    g.close()
+                    return jsonify({'lyrics': lyrics,
+                                    'songname': song_name})
 
         else:
             song = genius.search_song(song_name)
@@ -54,8 +109,7 @@ def receive_data():
 @app.route("/lyrics", methods=["POST"])
 def process_form():
     songInput = request.form.get("searchInput")
-    
-    
+
     if "-" in songInput:
         songartistSeparated = songInput.split(" - ")
         songName = songartistSeparated[0].title()
@@ -97,14 +151,6 @@ def process_form():
             songTitles.append(songTitle)
         
         
-        # New Search Method (Song Name)
-        secularArtistNames = []
-        christianArtistNames = []
-        artistSongforHTML = []
-        christianTemporaryArtistNames = []   # Used for Christian Song Index
-        christianSongIndex = []
-        christianSongTitles = []
-
         for name in artistNames:
             christianTemporaryArtistNames.append(name)
             if name in flattenedArtistsDatabase:
@@ -120,31 +166,42 @@ def process_form():
             elif artist not in flattenedArtistsDatabase:
                 secularArtistNames.append(artist)
         
-        
         for index in christianSongIndex:
-            christianSongTitles.append(songTitles[index])
+            if index > len(songTitles):
+                pass
+            else: 
+                christianSongTitles.append(songTitles[index])
         
+          
         i = 0   
-        for name in christianArtistNames:
+        for name in christianArtistNames:    
             artistSongforHTML.append(christianSongTitles[i] + " - " + name)
             print(songTitles[i] + " - " + name)
             i += 1
             
-
         # Output Test Code
-        print("Secular: " + str(secularArtistNames))
-        print("Christian: " + str(christianArtistNames))
-
-
+        print("Secular Artists: " + str(secularArtistNames))
+        print("Christian Artists: " + str(christianArtistNames))
+        print("Christian Songs: " + str(christianSongTitles))
+    
         if "-" in songInput and ArtistName in christianArtistNames:
             genius = lg.Genius(access_token)
             artist = genius.search_artist(ArtistName, max_songs=1, sort="title")
             song = artist.song(songName)
-            
             return render_template("lyrics.html", content=song.lyrics, Song=songName+ " - " + ArtistName)
         
+        elif "-" in songInput and songName in gitSongs and songName not in christianSongTitles and ArtistName in gitArtists:
+            contents = repo.get_contents("Artists/" + ArtistName+ "/" + songName)
+            lyrics = contents.decoded_content.decode()
+            g.close()
+            return render_template("lyrics.html", content=lyrics, Song=songName+ " - " + ArtistName)
+        
+        elif "-" in songInput and songName not in gitSongs and songName not in christianSongTitles and ArtistName not in gitArtists:
+            return render_template("404.html")
+                
         elif "-" not in songInput and christianArtistNames != []: 
             return render_template("songsList.html", songList = artistSongforHTML, Song=songName)
+        
         else:
             return render_template("404.html")
         
@@ -176,10 +233,7 @@ def receive_datas():
     shortURL = format(url_shortner.tinyurl.short(setlistURL))
     print(shortURL)
     return jsonify({'shortenedURL': shortURL})
-    
-
-
 
 
 #if __name__ == "__main__":
-    #app.run(debug=True, port=8002)
+    #app.run(debug=True, port='4000')  # host='192.168.0.28'
