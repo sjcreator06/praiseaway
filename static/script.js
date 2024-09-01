@@ -374,6 +374,7 @@ $(function() {
         setlistURL: currentUrl
     };
 
+
     fetch('/URL_Data', {
         method: 'POST',
         headers: {
@@ -405,7 +406,6 @@ $(function() {
 
     .catch(error => {
         console.error('Error:', error);
-
     });
 
 });
@@ -475,6 +475,7 @@ function openLyricsSite(title, artist) {
     const cleanTitle = title.trim();
     const cleanArtist = artist.trim();
     
+    loadingSite()
 
     const dataToSend = {
         songAndArtist: `${cleanTitle} - ${cleanArtist}`,
