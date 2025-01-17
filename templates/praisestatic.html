@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praiseaway</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="christian.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
+
+    <style>
+        /* Autocomplete dropdown CSS */
+        .autocomplete-results {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+            border-radius: 4px;
+            width: calc(100% - 22px); /* Same width as the input, accounting for padding and border */
+        }
+
+        .autocomplete-option {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .autocomplete-option:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Centering search bar */
+        #searchContainer {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            text-align: center;
+        }
+
+        #searchForm {
+            position: relative; /* To position autocomplete results relative to the form */
+        }
+
+        #searchInput {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+    
+   
+    <br>
+    <a href="song1" target="_blank">
+        <button class="button-30" role="button">Song 1</button>
+    </a>
+    <br>
+    <br>
+    <a href="song2" target="_blank">
+        <button class="button-30" role="button">Song 2</button>
+    </a>
+    <br>
+  
+
+
+    
+
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
