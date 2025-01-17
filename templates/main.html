@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Praiseaway</title>
+ <link rel="stylesheet" href="style.css" class="css">
+ <script src="script.js"></script>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <span>praise</span>away
+    </div>
+    <div class="description">
+      Find lyrics to your favorite Christian song in a few clicks
+    </div>
+    <button onclick="getstarted()" class="btn">Get Started</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="gallery">
+    <div class="gallery-text">
+      Over 6000 artists, 1000s of Albums, and counting
+    </div>
+    <div class="album-container">
+      <img src="https://res.cloudinary.com/js-create/image/upload/v1737074510/maverick_city_yycndf.jpg" alt="Album 1">
+      <img src="https://res.cloudinary.com/js-create/image/upload/v1737074510/bethel_jckjqh.jpg" alt="Album 2">
+      <img src="https://res.cloudinary.com/js-create/image/upload/v1737074510/Hillsong_ah9w8e.png" alt="Album 3">
+      <img src="https://res.cloudinary.com/js-create/image/upload/v1737074510/Tobymac_lmoqnl.jpg" alt="Album 4">
+      <img src="https://res.cloudinary.com/js-create/image/upload/v1737074510/elevation_mfqnms.jpg" alt="Album 5">
+      <img src="https://res.cloudinary.com/js-create/image/upload/v1737074510/king_utwoop.jpg" alt="Album 6">
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #1E1E3C;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .header {
+    flex: 3;
+    padding: 80px 20px;
+    text-align: left;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .logo {
+    font-family: 'Helvetica', sans-serif;
+    font-size: 100px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: left;
+  }
+
+  .logo span {
+    color: #00BFFF;
+  }
+
+  .description {
+    margin: 20px 0;
+    font-size: 24px;
+    color: #CCCCCC;
+    max-width: 600px;
+    text-align: left;
+  }
+
+  .btn {
+    background-color: white;
+    color: #1E1E3C;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-family: 'Arial', sans-serif;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+  }
+
+  .btn:hover {
+    background-color: #00BFFF;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .divider {
+    width: 100%;
+    height: 4px;
+    background-color: #00BFFF;
+  }
+
+  .gallery {
+    flex: 4;
+    background-color: white;
+    color: #1E1E3C;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .gallery-text {
+    font-size: 20px;
+    margin-bottom: 40px;
+    color: #555555;
+  }
+
+  .album-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .album-container img {
+    width: 300px;
+    height: 300px;
+    border-radius: 15px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+  }
+
+  .album-container img:hover {
+    transform: scale(1.1);
+  }
+</style>
+
+
+
+
+
+
+
+<script>
+    function getstarted(){
+    location.href="/hub"
+}
+</script>
