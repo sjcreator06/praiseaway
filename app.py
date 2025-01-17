@@ -232,5 +232,5 @@ def song3():
     return render_template("song3.html", content=songString)
 
 
-if __name__ == "__main__":
-    app.run(debug=True, port=8010)
+#if __name__ == "__main__":
+    #app.run(debug=True, port=8010)
