@@ -1,218 +1,236 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Praiseaway</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="shortcut icon" href="christian.png" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+from flask import Flask, render_template, request, jsonify, json
+from pyshorteners import Shortener
+import lyricsgenius as lg
+import csv
+import base64
 
-		
+access_token = "LC2defTjjGgEM09GFXIhStvjR9d_YnZ3WArkc_yoW3aA1ewUgCbJGVk8k2BYuveo"
+app = Flask(__name__, template_folder='templates')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
-    
+# Define routes
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-    <style>
-        /* Autocomplete dropdown CSS */
-        .autocomplete-results {
-            position: absolute;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-            border-radius: 4px;
-            width: calc(100% - 22px); /* Same width as the input, accounting for padding and border */
-        }
-
-        .autocomplete-option {
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        .autocomplete-option:hover {
-            background-color: #f9f9f9;
-        }
-
-        /* Centering search bar */
-        #searchContainer {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50%;
-            text-align: center;
-        }
-
-        #searchForm {
-            position: relative; /* To position autocomplete results relative to the form */
-        }
-
-        #searchInput {
-            width: 80%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-
-<!-- Wrapper -->
-<div id="wrapper">
-
-    <!-- Header -->
-        <header id="header">
-            <div class="inner">
-
-              
-
-                <!-- Nav -->
-                    <nav>
-                        <ul>
-                            <li><a href="#menu">Menu</a></li>
-                        </ul>
-                    </nav>
-
-            </div>
-        </header>
-    <!-- Menu -->
-        <nav id="menu">
-            <h2>Menu</h2>
-            <ul>
-                <li><a href="">Praiseaway Dynamic</a></li>
-                <li><a href="praisestatic">Priaseaway Static</a></li>
-            </ul>
-        </nav>
-
-<body onload="displaySetlistFromURL()">
-
-    <div id="container">
-        <div id="randomLine">
-            <p id="lineText"><span id="loadingText"></span><a href="javascript: displayRandomLine()" id="loadingLink" style="display:none;">Loading..</a></p>
-        </div><br>
-        <div id="searchContainer">
-            <form action="/lyrics" method="post" id="searchForm">
-                <input type="text" id="searchInput" name="searchInput" placeholder="Search for a song..." autocomplete="off">
-                <div id="autocompleteResults" class="autocomplete-results"></div>
-            </form>
-        </div>
-        <div class="button-container">
-            <button onclick="fetchAndProcessCSV()" class="button-30" role="button">Choose Random</button>
-        </div>
-        <div id="songListPopup">
-            <span class="close" onclick="closeSongListPopup()">&times;</span>
-            <h2>Song List</h2>
-            <form action="/lyrics" method="post">
-                <input type="text" id="searchInput" name="searchInput" placeholder= "Search for a song...   ">
-            </form>
-            <ul id="songList"></ul>
-        </div>
-        <br>
-        <button onclick="displaySetlist()" class="button-30" role="button">Setlist</button>
-        <br>
-        <button onclick="location.href=localStorage.getItem('url')" class="button-30" role="button">Shared Setlist</button>
-        <br>
-    </div>
+@app.route("/praisestatic")
+def praisestatic():
+    return render_template("praisestatic.html")
 
 
-    <div id="setlistPopup" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="closeSetlistPopup()">&times;</span>
-            <div id="setlistContent"></div>
-            <br>
-            <button onclick="clearSetlist()" class="button-30" role="button">Clear Setlist</button>
-            <button id="copyButton" class="button-30" role="button">Share Setlist</button>
-        </div>
-    </div>
-    
-    <div id="setlistPopup2" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="closeSetlistPopup2()">&times;</span>
-            <div id="setlistContent2"></div>
-            <br>
-            <button onclick = "shareSetlist2()" class="button-30" role="button">Share Setlist</button>
-        </div>
-    </div>
-    
-    <div id="lyricsDisplay"></div>
-    <script>
-        let songs = [];
+@app.route("/setchoice")
+def setchoice():
+    return render_template("index.html")
+    return render_template("setchoice.html")
 
-        const searchInput = document.getElementById('searchInput');
-        const autocompleteResults = document.getElementById('autocompleteResults');
-        const searchForm = document.getElementById('searchForm');
+# Recieves the Data when we click on song text with "-"
+@app.route('/receive_data', methods=['POST'])
+def receive_data():
+    global song_and_artist
+    data = request.get_json()
+
+
+    print("Received data from JavaScript:", data)
+
+    song_and_artist = data.get('songAndArtist')
+
+    if "amp;" in song_and_artist:
+        song_and_artist = song_and_artist.replace("amp;","&")
+
+
+    if song_and_artist:
+        song_name, artist_name = map(str.strip, song_and_artist.split('-', 1))
+
+        genius = lg.Genius("LC2defTjjGgEM09GFXIhStvjR9d_YnZ3WArkc_yoW3aA1ewUgCbJGVk8k2BYuveo")
+        if artist_name:
+            artist = genius.search_artist(artist_name, max_songs=1, sort="title")
+            if artist:
+                song = artist.song(song_name)
+                if song:
+                    return jsonify({'lyrics': song.lyrics})
+
+        else:
+            song = genius.search_song(song_name)
+            if song:
+                return jsonify({'lyrics': song.lyrics})
+
+    return jsonify({'error': 'Failed to retrieve lyrics'})
+
+# Search Function using Artist and Song Name
+@app.route("/lyrics", methods=["POST"])
+def process_form():
+    songInput = request.form.get("searchInput")
+
+
+    if "-" in songInput:
+        songartistSeparated = songInput.split(" - ")
+        songName = songartistSeparated[0].title()
+        ArtistName = songartistSeparated[1].title()
+
+    else:
+        songName = songInput
+
+    with open('Artists.csv') as csvfile:
+        genius = lg.Genius(access_token)
+
+        # Artist Database
+        artistsCSV = csv.reader(csvfile, delimiter='\n')
+        artistsDatabase = []
+
+        for row in artistsCSV:
+            artistsDatabase.append(row)
+
+        flattenedArtistsDatabase = []
+
+        for sublist in artistsDatabase:
+            for artist in sublist:
+                flattenedArtistsDatabase.append(artist)
+
+        # Initializing song name and artist as key value pairs
+        data = []
+        artistNames = []
+        songTitles = []
+
+        songDict = genius.search_songs(songName)
+        songResults = songDict["hits"]
+
+        for hit in songResults:
+            song_info = hit["result"]
+            artistName = song_info.get("primary_artist").get("name")
+            songTitle = song_info.get("title")
+            data.append({artistName + " , " + songTitle})   
+            artistNames.append(artistName)
+            songTitles.append(songTitle)
+
+
+        # New Search Method (Song Name)
+        secularArtistNames = []
+        christianArtistNames = []
+        artistSongforHTML = []
+        christianTemporaryArtistNames = []   # Used for Christian Song Index
+        christianSongIndex = []
+        christianSongTitles = []
+
+        for name in artistNames:
+            christianTemporaryArtistNames.append(name)
+            if name in flattenedArtistsDatabase:
+                index = christianTemporaryArtistNames.index(name)
+                christianSongIndex.append(index)
+                christianTemporaryArtistNames[index] = ""
+
+
+        for artist in artistNames:
+            if artist in flattenedArtistsDatabase:
+                christianArtistNames.append(artist)
+
+            elif artist not in flattenedArtistsDatabase:
+                secularArtistNames.append(artist)
+
+
+        for index in christianSongIndex:
+            christianSongTitles.append(songTitles[index])
+
+        i = 0   
+        for name in christianArtistNames:
+            artistSongforHTML.append(christianSongTitles[i] + " - " + name)
+            print(songTitles[i] + " - " + name)
+            i += 1
+
+
+        # Output Test Code
+        print("Secular: " + str(secularArtistNames))
+        print("Christian: " + str(christianArtistNames))
+
+
+        if "-" in songInput and ArtistName in christianArtistNames:
+            genius = lg.Genius(access_token)
+            artist = genius.search_artist(ArtistName, max_songs=1, sort="title")
+            song = artist.song(songName)
+
+            return render_template("lyrics.html", content=song.lyrics, Song=songName+ " - " + ArtistName)
+
+        elif "-" not in songInput and christianArtistNames != []: 
+            return render_template("songsList.html", songList = artistSongforHTML, Song=songName)
+        else:
+            return render_template("404.html")
+
+
+@app.route("/lyrics")
+def lyrics():
+    lyrics_data = request.args.get('lyrics')
+    if lyrics_data:
+        return render_template("lyrics.html", content=lyrics_data, Song=song_and_artist)
+    else:
+        print("Lyrics not available")
+        return render_template("404.html")
+
+
+
+
+@app.route("/loading")
+def loading():
+    return render_template("loading.html")
+
+
+# Shortens Setlist URL
+@app.route('/URL_Data', methods=['POST'])
+def receive_datas():
+    global setlistURL
+    data = request.get_json()
+    setlistURL = data.get('setlistURL')
+    url_shortner = Shortener()
+    shortURL = format(url_shortner.tinyurl.short(setlistURL))
+    print(shortURL)
+    return jsonify({'shortenedURL': shortURL})
+
+
+
+
+
+
+
+@app.route("/song1")
+def song1():
+
         
-        async function fetchCSVContent() {
-            const response = await fetch("static/songs.csv");
-            const text = await response.text();
-            return text;
-        }
-        
-        function parseCSVContent(content) {
-            const lines = content.split("\n");
-            const songs = lines.map(line => line.trim()).filter(line => line !== "");
-            return songs;
-        }
-        
-        function filterSongs(input) {
-            return songs.filter(song => song.toLowerCase().includes(input.toLowerCase())).slice(0, 5);
-        }
-
-        function updateAutocompleteOptions(options) {
-            autocompleteResults.innerHTML = '';
-
-            options.forEach(option => {
-                const optionElement = document.createElement('div');
-                optionElement.classList.add('autocomplete-option');
-                optionElement.textContent = option.replace(","," - ").replace(",,","");
-
-                
-                optionElement.addEventListener('click', () => {
-                    searchInput.value = option.replace(","," - ").replace(",,","");;
-                    autocompleteResults.innerHTML = '';
-                    searchForm.submit();  // Submit the form
-                    loadingSite()
-                });
-
-                autocompleteResults.appendChild(optionElement);
-            });
-        }
-
-        searchInput.addEventListener('input', async () => {
-            const inputValue = searchInput.value;
-            if (inputValue.length > 0) {
-                const filteredSongs = filterSongs(inputValue);
-                updateAutocompleteOptions(filteredSongs);
-            } else {
-                autocompleteResults.innerHTML = '';
-            }
-        });
-
-        async function fetchAndProcessCSV() {
-            try {
-                const content = await fetchCSVContent();
-                songs = parseCSVContent(content);
-            } catch (error) {
-                console.error("Error fetching or processing CSV:", error);
-            }
-        }
-
-        fetchAndProcessCSV();
+    with open('Lyrics/song1.txt', "r") as song1:
+        songString = ""
+        i=0
+        for line in song1:
+            print(line)
+            songString += line
+            i+=1
+            
+    return render_template("song1.html", content=songString)
 
 
-    </script>
+@app.route("/song2")
+def song2():
+
     
-    <script src="static/script.js"></script>
+    with open('Lyrics/song2.txt', "r") as song1:
+        songString = ""
+        i=0
+        for line in song1:
+            print(line)
+            songString += line
+            i+=1
+            
+    return render_template("song2.html", content=songString)
 
-    <!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/main.js"></script>
+@app.route("/song3")
+def song3():
 
-</body>
-</html>
+    
+    with open('Lyrics/song3.txt', "r") as song1:
+        songString = ""
+        i=0
+        for line in song1:
+            print(line)
+            songString += line
+            i+=1
+            
+    return render_template("song3.html", content=songString)
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=8010)
