@@ -10,6 +10,10 @@ app = Flask(__name__, template_folder='templates')
 # Define routes
 @app.route("/")
 def index():
+    return render_template("main.html")
+
+@app.route("/hub")
+def hub():
     return render_template("index.html")
 
 @app.route("/praisestatic")
@@ -182,16 +186,10 @@ def receive_datas():
     print(shortURL)
     return jsonify({'shortenedURL': shortURL})
 
-
-
-
-
-
-
 @app.route("/song1")
 def song1():
 
-        
+    
     with open('Lyrics/song1.txt', "r") as song1:
         songString = ""
         i=0
@@ -231,6 +229,5 @@ def song3():
             
     return render_template("song3.html", content=songString)
 
-
 #if __name__ == "__main__":
-    #app.run(debug=True, port=8010)
+    #app.run(debug=True, port=8016)
