@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="static/lyrics.css" class="css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        
+        .lyrics {
+            margin: 50px auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        }
+        
+        .lyrics p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        #buttonContainer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .controlButton {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .controlButton:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        body {
+  font-family: Arial, sans-serif;
+}
+
+#popupContainer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+
+    </style>
+    <title>Lyrics</title>
+</head>
+<body>
+    <div class="lyrics">
+        <center>
+        <h1 id="title">{{ Song }}</h1>
+        <div id="buttonContainer">
+            <button onclick="home()" class="controlButton"><i class="fa-solid fa-arrow-left"></i></button> &nbsp;
+        </div>
+        <pre>{{ content }}</pre>
+        </center>
+    </div>
+
+    <script>
+        document.getElementById("shareButton").addEventListener("click", function() {
+            var currentUrl = window.location.href;
+            fetch('http://tinyurl.com/api-create.php?url=' + encodeURIComponent(currentUrl))
+            .then(response => response.text())
+            .then(shorturl => {
+                var tempInput = document.createElement("input");
+                tempInput.value = shorturl;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempInput);
+                var shareMessage = document.createElement("div");
+                shareMessage.textContent = "Shortened URL copied to clipboard!";
+                shareMessage.style.backgroundColor = "#4CAF50";
+                shareMessage.style.color = "white";
+                shareMessage.style.padding = "10px";
+                shareMessage.style.position = "fixed";
+                shareMessage.style.bottom = "10px";
+                shareMessage.style.left = "50%";
+                shareMessage.style.transform = "translateX(-50%)";
+                shareMessage.style.borderRadius = "5px";
+                document.body.appendChild(shareMessage);
+                setTimeout(function() {
+                    document.body.removeChild(shareMessage);
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while shortening the URL.');
+            });
+        });
+
+        function youtube(){
+            window.open("https://www.youtube.com/results?search_query="+ document.getElementById("title").innerHTML)
+        }
+
+        function spotify(){
+            window.open("  https://open.spotify.com/search/"+ document.getElementById("title").innerHTML)
+        }
+
+
+        function home(){
+            location.href="praisestatic"
+        }
+
+        function setlist(){
+            
+            location.href="/setchoice"
+        }
+        
+        function addlist() {
+            var songName = document.getElementById('title').textContent;
+            dashset(songName);
+            alert('added to setlist!')
+        }
+
+        function backward() {
+            location.href="praisestatic"
+        }
+
+
+
+        function forward() {
+            let storedData = localStorage.getItem('selectedSongs');
+            if (storedData) {
+            let songsArray = JSON.parse(storedData);
+            let sharedsongslist = localStorage.getItem("songsShared")
+            let sharedartistslist = localStorage.getItem("artistsShared")
+
+
+
+
+            let currentsong = document.getElementById("title").textContent.split(" - ")
+            let sharedsong = JSON.parse(localStorage.getItem("songsShared"))
+            let sharedartist = JSON.parse(localStorage.getItem("artistsShared"))
+
+
+            openLyricsSite(sharedsong[sharedsong.indexOf(currentsong[0])+1] ,sharedartist[sharedartist.indexOf(currentsong[1])+1])
+
+
+            } else {
+            console.log('No data found in local storage');
+            }
+        }
+
+
+
+// document.getElementById("popupContainer").style.display = "block";
+            // document.getElementById("popupIframe").src = "/setchoice";
+
+            // document.getElementById("closePopup").addEventListener("click", function() {
+            // document.getElementById("popupContainer").style.display = "none";
+            // document.getElementById("popupIframe").src = "";
+            // });
+
+    
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<div id="popupContainer">
+    <div class="popup">
+      <span class="close" id="closePopup">&times;</span>
+      <iframe id="popupIframe" src="" frameborder="0"></iframe>
+    </div>
+  </div>
+
+</body>
+</html>
