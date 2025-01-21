@@ -8,24 +8,28 @@
 
 <br />
 
-# Features
-### 1. Dynamic Search System 
+# Top Features
+### | 1. Dynamic Search System 
 
 Search for your favorite worship song and Praiseaway will give you its lyrics 
 
 <img width="200" alt="Screenshot 2025-01-21 at 10 39 59 AM" src="https://github.com/user-attachments/assets/bac067f3-e4f8-405b-9349-551161beebcd" />
 <br />
 
-### 2. Setlists
+### | 2. Setlists
 Create your custom sharable setlists in a matter of few clicks
 
-### 3. Print Songs
+<img width="250" alt="Screenshot 2025-01-21 at 11 27 21 AM" src="https://github.com/user-attachments/assets/2cfaf49f-29c6-453b-938c-c83629372b98" />
+
+### | 3. Print Songs
 Never create a song sheet again! Praiseaway formats song lyrics for you to print.
 
-### 4. Sharable Links
+<img width="250" alt="Screenshot 2025-01-21 at 11 23 49 AM" src="https://github.com/user-attachments/assets/4e1c1526-faec-4baf-9766-f36c695f3652" />
+
+### | 4. Sharable Links
 Praiseaway creates a custom shortened URL for sharing
 
-### 5. Youtube Links
+### | 5. Youtube Links
 Hear your song by clicking the Youtube Icon in the navigation Bar.
 
 <img width="345" alt="Screenshot 2025-01-21 at 11 09 13 AM" src="https://github.com/user-attachments/assets/4f9fc9dc-8d92-452a-bb67-a7856fbd82f2" />
