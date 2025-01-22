@@ -13,8 +13,6 @@
 
 Search for your favorite worship song and Praiseaway will give you its lyrics 
 
-<br />
-
 ### | 2. Setlists
 Create your custom sharable setlists in a matter of few clicks
 
